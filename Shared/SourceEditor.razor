@@ -1,0 +1,15 @@
+<EditForm Model="@Generator" OnValidSubmit="@HandleValidSubmit">
+    <InputTextArea id="source" @bind-Value="Generator.Source" />
+    <button type="submit">Submit</button>
+</EditForm>
+
+<pre id="result">@Generator.LastResult</pre>
+
+@code {
+    [Parameter] public IGenerator Generator { get; set; }
+
+    private void HandleValidSubmit()
+    {
+        Generator.Transform();
+    }
+}
