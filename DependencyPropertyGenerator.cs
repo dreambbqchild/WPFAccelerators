@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Blazor.Extensions.Storage;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,9 +15,7 @@ namespace WPFAccelerators
 
     public class DependencyPropertyGenerator : IGenerator
     {
-        public string Source { get; set; }
-
-        public string LastResult { get; private set; } = string.Empty;
+        private readonly LocalStorage localStorage;
 
         private static IEnumerable<PropertySupport> ProcessVariable(ClassDeclarationSyntax @class, VariableDeclarationSyntax variableDeclaration)
         {
@@ -84,10 +83,26 @@ namespace WPFAccelerators
             return builder.ToString();
         }
 
+        public DependencyPropertyGenerator(LocalStorage localStorage)
+        {
+            this.localStorage = localStorage;
+        }
+
+        public string Source { get; set; }
+
+        public string LastResult { get; private set; } = string.Empty;
+
+        public async Task InitSource()
+        {
+            Source = await localStorage.GetItem<string>("dp.generator.source");
+        }
+
         public void Transform()
         {
             if (string.IsNullOrWhiteSpace(Source))
                 LastResult = string.Empty;
+
+            localStorage.SetItem("dp.generator.source", Source);
 
             var tree = CSharpSyntaxTree.ParseText(Source);
             var root = tree.GetRoot();

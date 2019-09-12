@@ -1,12 +1,23 @@
 <EditForm Model="@Generator" OnValidSubmit="@HandleValidSubmit">
-    <InputTextArea id="source" @bind-Value="Generator.Source" />
-    <button type="submit">Submit</button>
+    <p>
+        <InputTextArea id="source" class="full-width" style="height: 10em;" @bind-Value="Generator.Source" />
+    </p>
+    <p>
+        <button type="submit">Submit</button>
+    </p>
 </EditForm>
+
+<hr />
 
 <pre id="result">@Generator.LastResult</pre>
 
 @code {
     [Parameter] public IGenerator Generator { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Generator.InitSource();
+    }
 
     private void HandleValidSubmit()
     {

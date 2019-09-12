@@ -11,6 +11,7 @@ namespace WPFAccelerators
 
         string LastResult { get; }
 
+        Task InitSource();
         void Transform();
     }
 }

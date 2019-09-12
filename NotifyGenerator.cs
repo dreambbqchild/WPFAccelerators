@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Blazor.Extensions.Storage;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
@@ -13,6 +14,8 @@ namespace WPFAccelerators
 
     public class NotifyGenerator : IGenerator
     {
+        private readonly LocalStorage localStorage;
+
         private static SyntaxTrivia space = Whitespace(" ");
 
         private static string FieldName(SyntaxToken token)
@@ -53,6 +56,11 @@ namespace WPFAccelerators
             }
         }
 
+        public NotifyGenerator(LocalStorage localStorage)
+        {
+            this.localStorage = localStorage;            
+        }
+
         public string Source { get; set; }
 
         public string LastResult { get; private set; } = string.Empty;
@@ -73,10 +81,17 @@ namespace WPFAccelerators
             return builder.ToString();
         }
 
+        public async Task InitSource()
+        {
+            Source = await localStorage.GetItem<string>("notify.generator.source");
+        }
+
         public void Transform()
         {
             if (string.IsNullOrWhiteSpace(Source))
                 LastResult = string.Empty;
+
+            localStorage.SetItem<string>("notify.generator.source", Source);
 
             var tree = CSharpSyntaxTree.ParseText(Source);
             var root = tree.GetRoot();

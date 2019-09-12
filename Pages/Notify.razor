@@ -1,8 +1,6 @@
 ﻿@page "/notify"
+@inject NotifyGenerator notify
+
+<h1>INotifyPropertyChanged Generator</h1>
 
 <SourceEditor Generator="@notify" />
-
-@code
-{
-    private readonly NotifyGenerator notify = new NotifyGenerator();
-}

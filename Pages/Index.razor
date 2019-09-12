@@ -1,8 +1,6 @@
 ﻿@page "/"
+@inject DependencyPropertyGenerator dp
+
+<h1>Dependency Property Generator</h1>
 
 <SourceEditor Generator="@dp" />
-
-@code
-{
-    private readonly DependencyPropertyGenerator dp = new DependencyPropertyGenerator();
-}
